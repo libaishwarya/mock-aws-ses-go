@@ -30,3 +30,17 @@ func AssertError(t *testing.T, rr *httptest.ResponseRecorder, wantCode int, want
 
 	assert.Equal(t, wantMessage, data["error"], "wrong error message")
 }
+
+func Assert(t *testing.T, rr *httptest.ResponseRecorder, wantCode int, expectedOutput map[string]any) {
+	t.Helper()
+
+	assert.Equal(t, wantCode, rr.Code, "wrong status code")
+
+	var data map[string]interface{}
+	err := json.Unmarshal(rr.Body.Bytes(), &data)
+	if err != nil {
+		t.Fatalf("failed to unmarshal response: %v", err)
+	}
+
+	assert.Equal(t, expectedOutput, data, "wrong response")
+}

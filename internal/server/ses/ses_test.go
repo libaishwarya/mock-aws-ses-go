@@ -8,6 +8,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/libaishwarya/mock-aws-ses-go/internal/server/ses"
+	"github.com/libaishwarya/mock-aws-ses-go/internal/store/inmemory"
 
 	"github.com/libaishwarya/mock-aws-ses-go/internal/server"
 )
@@ -72,6 +73,40 @@ func TestSendEmail_Validation(t *testing.T) {
 	}
 }
 
+func TestSendEmail_Success(t *testing.T) {
+	router := startServer()
+
+	tests := []struct {
+		Name      string
+		Body      map[string]any
+		MessageID string
+	}{
+		{
+			Name: "createemail1",
+			Body: map[string]any{
+				"source":      "test@gmail.com",
+				"destination": "test@gmail.com",
+				"message": map[string]any{
+					"subject": map[string]any{"data": "test"},
+					"body": map[string]any{
+						"html": "test",
+					},
+				},
+			},
+			MessageID: "1",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.Name, func(t *testing.T) {
+			req := sendEmailRequest(tt.Body)
+			resp := server.ServerHTTP(router, req)
+
+			server.Assert(t, resp, http.StatusOK, map[string]any{"messageId": tt.MessageID})
+		})
+	}
+}
+
 func TestSendRawEmail_Validation(t *testing.T) {
 	router := startServer()
 
@@ -101,6 +136,33 @@ func TestSendRawEmail_Validation(t *testing.T) {
 	}
 }
 
+func TestSendRawEmail_Success(t *testing.T) {
+	router := startServer()
+
+	tests := []struct {
+		Name      string
+		Body      map[string]any
+		MessageID string
+	}{
+		{
+			Name: "createrawemail1",
+			Body: map[string]any{
+				"data": "test",
+			},
+			MessageID: "1",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.Name, func(t *testing.T) {
+			req := sendRawEmailRequest(tt.Body)
+			resp := server.ServerHTTP(router, req)
+
+			server.Assert(t, resp, http.StatusOK, map[string]any{"messageId": tt.MessageID})
+		})
+	}
+}
+
 func sendEmailRequest(body map[string]any) *http.Request {
 	data := &bytes.Buffer{}
 	json.NewEncoder(data).Encode(body)
@@ -117,7 +179,9 @@ func sendRawEmailRequest(body map[string]any) *http.Request {
 
 func startServer() *gin.Engine {
 	r := gin.Default()
-	ses.AttachRoutes(r)
+	inMemoryStore := inmemory.NewInMemoryStore()
+
+	ses.AttachRoutes(r, inMemoryStore)
 
 	return r
 

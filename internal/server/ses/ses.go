@@ -1,23 +1,26 @@
 package ses
 
 import (
-	"encoding/base64"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/go-playground/validator/v10"
+	"github.com/libaishwarya/mock-aws-ses-go/internal/app"
 	"github.com/libaishwarya/mock-aws-ses-go/internal/serror"
+	"github.com/libaishwarya/mock-aws-ses-go/internal/store"
 )
 
 type SESHandler struct {
+	Store store.Store
 }
 
-func NewSESHandler() *SESHandler {
-	return &SESHandler{}
+func NewSESHandler(store store.Store) *SESHandler {
+	return &SESHandler{
+		Store: store,
+	}
 }
 
-func AttachRoutes(r *gin.Engine) {
-	sesHandler := NewSESHandler()
+func AttachRoutes(r *gin.Engine, store store.Store) {
+	sesHandler := NewSESHandler(store)
 	r.POST("/v1/sendEmail", sesHandler.SendEmail)
 	r.POST("/v1/sendRawEmail", sesHandler.SendRawEmail)
 	// r.GET("/v1/listIdentities", sesHandler.ListIdentities)
@@ -27,74 +30,43 @@ func AttachRoutes(r *gin.Engine) {
 }
 
 func (s *SESHandler) SendEmail(c *gin.Context) {
-	var req SendEmailRequest
+	var req app.SendEmailRequest
 
 	if err := c.ShouldBindJSON(&req); err != nil {
 		serror.HandleBindError(c, err, req)
 		return
 	}
 
-	// TODO: Implement store.
+	messageID, err := s.Store.CreateEmailSend(req)
+	if err != nil {
+		c.Error(err)
+		c.Status(http.StatusInternalServerError)
+		return
+	}
 
 	// Simulate email sending
-	c.JSON(http.StatusOK, SendEmailResponse{
-		MessageId: "mock-message-id",
+	c.JSON(http.StatusOK, app.SendEmailResponse{
+		MessageId: messageID,
 	})
 }
 
 func (s *SESHandler) SendRawEmail(c *gin.Context) {
-	var req SendRawEmailRequest
+	var req app.SendRawEmailRequest
 
 	if err := c.ShouldBindJSON(&req); err != nil {
 		serror.HandleBindError(c, err, req)
 		return
 	}
 
-	// TODO: Implement store.
+	messageID, err := s.Store.CreateRawEmailSend(req)
+	if err != nil {
+		c.Error(err)
+		c.Status(http.StatusInternalServerError)
+		return
+	}
 
 	// Simulate email sending
-	c.JSON(http.StatusOK, SendEmailResponse{
-		MessageId: "mock-message-id",
+	c.JSON(http.StatusOK, app.SendEmailResponse{
+		MessageId: messageID,
 	})
-}
-
-type Body struct {
-	HTML string `json:"html,omitempty"`
-	Text string `json:"text,omitempty"`
-}
-
-type Subject struct {
-	Data    string `json:"data" binding:"required"`
-	Charset string `json:"charset" binding:"omitempty"`
-}
-
-type Message struct {
-	Subject Subject `json:"subject" binding:"required"`
-	Body    Body    `json:"body" binding:"required"`
-}
-
-type SendEmailRequest struct {
-	Source      string  `json:"source" binding:"email,required"`
-	Destination string  `json:"destination" binding:"email,required"`
-	Message     Message `json:"message" binding:"required"`
-
-	// TODO: Add additional options fields later.
-	ReturnPath string `json:"_"`
-}
-
-type SendEmailResponse struct {
-	MessageId string `json:"messageId"`
-}
-
-type SendRawEmailRequest struct {
-	Data string `json:"data" binding:"base64,required"`
-
-	// TODO: Add additional options fields later.
-	ReturnPath string `json:"_"`
-}
-
-// Custom Base64 validator
-func base64Validator(fl validator.FieldLevel) bool {
-	_, err := base64.StdEncoding.DecodeString(fl.Field().String())
-	return err == nil
 }
