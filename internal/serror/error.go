@@ -1,6 +1,7 @@
 package serror
 
 import (
+	"fmt"
 	"net/http"
 	"reflect"
 	"strings"
@@ -45,29 +46,28 @@ func getErrorMessage(tag string) string {
 	}
 }
 
-// HandleBindError formats binding errors for better readability
+// HandleBindError formats binding errors in one line
 func HandleBindError(c *gin.Context, err error, obj interface{}) {
 	var validationErrors validator.ValidationErrors
 
 	if errors, ok := err.(validator.ValidationErrors); ok {
 		validationErrors = errors
 	} else {
-		c.JSON(http.StatusBadRequest, "invalid fields provided")
+		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid fields provided"})
 		return
 	}
 
-	errorMessages := make(map[string]string)
+	var errorMessages []string
 	for _, e := range validationErrors {
-		errorMessages[getJSONFieldName(obj, e.Field())] = getErrorMessage(e.Tag())
+		field := getJSONFieldName(obj, e.Field()) // Get JSON field name
+		message := getErrorMessage(e.Tag())       // Custom error message
+		errorMessages = append(errorMessages, fmt.Sprintf("%s: %s", field, message))
 	}
 
-	if len(errorMessages) == 0 {
-		c.JSON(http.StatusBadRequest, err.Error())
-		return
-	}
+	// Convert errors to a single-line string
+	errorMessageString := strings.Join(errorMessages, ", ")
 
 	c.JSON(http.StatusBadRequest, gin.H{
-		"error":  "Validation failed",
-		"fields": errorMessages,
+		"error": fmt.Sprintf("validation failed: %s", errorMessageString),
 	})
 }

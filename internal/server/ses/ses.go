@@ -20,9 +20,9 @@ func AttachRoutes(r *gin.Engine) {
 	sesHandler := NewSESHandler()
 	r.POST("/v1/sendEmail", sesHandler.SendEmail)
 	r.POST("/v1/sendRawEmail", sesHandler.SendRawEmail)
-	r.GET("/v1/listIdentities", sesHandler.ListIdentities)
-	r.GET("/v1/getSendQuota", sesHandler.GetSendQuota)
-	r.GET("/v1/stats", sesHandler.GetStats)
+	// r.GET("/v1/listIdentities", sesHandler.ListIdentities)
+	// r.GET("/v1/getSendQuota", sesHandler.GetSendQuota)
+	// r.GET("/v1/stats", sesHandler.GetStats)
 
 }
 
