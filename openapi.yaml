@@ -1,0 +1,186 @@
+openapi: 3.0.0
+info:
+  title: Mock AWS SES API
+  description: Mock AWS SES is a mock server to mock the AWS SES API.
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080
+paths:
+  /v1/sendEmail:
+    post:
+      summary: Send an email
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SendEmailRequest'
+      responses:
+        '200':
+          description: Email sent successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SendEmailResponse'
+        '400':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: Too many requests
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /v1/sendRawEmail:
+    post:
+      summary: Send a raw email
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SendRawEmailRequest'
+      responses:
+        '200':
+          description: Raw email sent successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SendEmailResponse'
+        '400':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: Too many requests
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /v1/listIdentities:
+    get:
+      summary: List identities
+      responses:
+        '200':
+          description: List of identities
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  Identities:
+                    type: array
+                    items:
+                      type: string
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /v1/getSendQuota:
+    get:
+      summary: Get send quota
+      responses:
+        '200':
+          description: Send quota details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  Max24HourSend:
+                    type: integer
+                    example: 10000
+                  MaxSendRate:
+                    type: integer
+                    example: 14
+                  SentLast24Hours:
+                    type: integer
+                    example: 10
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /v1/stats:
+    get:
+      summary: Get email stats
+      responses:
+        '200':
+          description: Email stats
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  TotalRequests:
+                    type: integer
+                    example: 10
+                  SuccessfulRequests:
+                    type: integer
+                    example: 10
+                  FailedRequests:
+                    type: integer
+                    example: 0
+                  BouncedEmails:
+                    type: integer
+                    example: 0
+                  RejectedEmails:
+                    type: integer
+                    example: 0
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+components:
+  schemas:
+    SendEmailRequest:
+      type: object
+      properties:
+        Source:
+          type: string
+          format: email
+        Destination:
+          type: string
+          format: email
+        Message:
+          type: object
+          properties:
+            Subject:
+              type: object
+              properties:
+                Data:
+                  type: string
+                Charset:
+                  type: string
+            Body:
+              type: object
+              properties:
+                HTML:
+                  type: string
+                Text:
+                  type: string
+    SendEmailResponse:
+      type: object
+      properties:
+        MessageId:
+          type: string
+    SendRawEmailRequest:
+      type: object
+      properties:
+        Data:
+          type: string
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string

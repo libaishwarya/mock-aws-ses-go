@@ -22,6 +22,7 @@ func NewSESHandler(store store.Store) *SESHandler {
 
 func AttachRoutes(r *gin.Engine, store store.Store) {
 	sesHandler := NewSESHandler(store)
+	// Set rate limit: 5 requests per second with a burst of 10
 	rl := middleware.NewRateLimiter(5, 10)
 
 	r.POST("/v1/sendEmail", middleware.RateLimitMiddleware(rl), sesHandler.identities(), sesHandler.SendEmail)

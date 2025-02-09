@@ -1,11 +1,12 @@
 module github.com/libaishwarya/mock-aws-ses-go
 
-go 1.23.6
+go 1.23
 
 require (
 	github.com/gin-gonic/gin v1.10.0
 	github.com/go-playground/validator/v10 v10.20.0
 	github.com/stretchr/testify v1.9.0
+	golang.org/x/time v0.10.0
 )
 
 require (
