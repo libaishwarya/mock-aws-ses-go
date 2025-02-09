@@ -44,7 +44,5 @@ Postman collection added for testing.
 # API Reference
 https://docs.aws.amazon.com/ses/latest/APIReference
 
-<video controls width="600">
-  <source src="https://github.com/libaishwarya/go-concepts-practice/raw/refs/heads/main/mockawsses-2025-02-09_22.21.26.mp4" type="video/mp4">
-  Your browser does not support the video tag.
-</video>
+https://github.com/libaishwarya/go-concepts-practice/raw/refs/heads/main/mockawsses-2025-02-09_22.21.26.mp4
+[🎥 Watch the video](https://github.com/libaishwarya/go-concepts-practice/raw/refs/heads/main/mockawsses-2025-02-09_22.21.26.mp4)
