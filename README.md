@@ -3,8 +3,9 @@
 
 Mock AWS SES is a mock server to mock the AWS SES API.
 
-
 Currently the valid identities are (test@demtech.ai, test@test.com, test@gmail.com). Only they can send mail.
+The default Max24HourSend is 10000 and maximum emails per second is 14.
+
 
 # TODO
 * Implement the Rest of APIs

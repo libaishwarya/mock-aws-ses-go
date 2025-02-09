@@ -211,6 +211,37 @@ func TestListIdentities_Success(t *testing.T) {
 	})
 }
 
+func TestGetQuota_Success(t *testing.T) {
+	router := startServer()
+
+	// Send 10 emails
+	for i := 0; i < 10; i++ {
+		req := sendEmailRequest(map[string]any{
+			"source":      "test@gmail.com",
+			"destination": "test@gmail.com",
+			"message": map[string]any{
+				"subject": map[string]any{"data": "test"},
+				"body": map[string]any{
+					"html": "test",
+				},
+			},
+		})
+		server.ServerHTTP(router, req)
+	}
+
+	t.Run("get quota", func(t *testing.T) {
+		req := sendGetQuotaRequest()
+		resp := server.ServerHTTP(router, req)
+
+		assert.Equal(t, http.StatusOK, resp.Code, "wrong status code")
+		server.Assert(t, resp, http.StatusOK, map[string]any{
+			"Max24HourSend":   float64(10000),
+			"MaxSendRate":     float64(14),
+			"SentLast24Hours": float64(10),
+		})
+	})
+}
+
 func sendEmailRequest(body map[string]any) *http.Request {
 	data := &bytes.Buffer{}
 	json.NewEncoder(data).Encode(body)
@@ -227,6 +258,11 @@ func sendRawEmailRequest(body map[string]any) *http.Request {
 
 func sendlistIdentitiesRequest() *http.Request {
 	req, _ := http.NewRequest("GET", "/v1/listIdentities", nil)
+	return req
+}
+
+func sendGetQuotaRequest() *http.Request {
+	req, _ := http.NewRequest("GET", "/v1/getSendQuota", nil)
 	return req
 }
 

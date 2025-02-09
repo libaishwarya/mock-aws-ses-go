@@ -6,4 +6,5 @@ type Store interface {
 	CreateEmailSend(app.SendEmailRequest) (string, error)
 	CreateRawEmailSend(app.SendRawEmailRequest) (string, error)
 	ListIdentities() ([]string, error)
+	GetSentEmailCount24() (int, error)
 }
