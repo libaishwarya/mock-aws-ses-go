@@ -25,8 +25,7 @@ func AttachRoutes(r *gin.Engine, store store.Store) {
 	r.POST("/v1/sendRawEmail", sesHandler.identities(), sesHandler.SendRawEmail)
 	r.GET("/v1/listIdentities", sesHandler.identities(), sesHandler.ListIdentities)
 	r.GET("/v1/getSendQuota", sesHandler.GetSendQuota)
-	// r.GET("/v1/stats", sesHandler.GetStats)
-
+	r.GET("/v1/stats", sesHandler.GetStats)
 }
 
 func (s *SESHandler) SendEmail(c *gin.Context) {
@@ -110,5 +109,22 @@ func (s *SESHandler) GetSendQuota(c *gin.Context) {
 		"Max24HourSend":   10000,
 		"MaxSendRate":     14,
 		"SentLast24Hours": count,
+	})
+}
+
+func (s *SESHandler) GetStats(c *gin.Context) {
+	count, err := s.Store.GetEmailStats()
+	if err != nil {
+		c.Error(err)
+		c.Status(http.StatusInternalServerError)
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"TotalRequests":      count["total"],
+		"SuccessfulRequests": count["sent"],
+		"FailedRequests":     count["failed"],
+		"BouncedEmails":      count["bounced"],
+		"RejectedEmails":     count["rejected"],
 	})
 }

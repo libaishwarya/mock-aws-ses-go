@@ -66,3 +66,21 @@ func (i *InMemoryStore) GetSentEmailCount24() (int, error) {
 
 	return last24HourEmailCount, nil
 }
+
+func (i *InMemoryStore) GetEmailStats() (map[string]int, error) {
+	total := 0
+	stats := make(map[string]int)
+	for _, email := range i.EmailSent {
+		stats[email.Status]++
+		total++
+	}
+
+	for _, email := range i.RawEmailSent {
+		stats[email.Status]++
+		total++
+	}
+
+	stats["total"] = total
+
+	return stats, nil
+}

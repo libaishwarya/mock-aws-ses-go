@@ -14,6 +14,7 @@ Current all the email sending will be success. The list of destination email for
 * OpenAPI Spec
 * Add configuration/list where email send would fail/reject
 * Optional(Relational store)
+* Time intervaled stats
 
 # API Reference
 https://docs.aws.amazon.com/ses/latest/APIReference

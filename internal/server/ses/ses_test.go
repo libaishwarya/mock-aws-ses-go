@@ -242,6 +242,39 @@ func TestGetQuota_Success(t *testing.T) {
 	})
 }
 
+func TestGetStats_Success(t *testing.T) {
+	router := startServer()
+
+	// Send 10 emails
+	for i := 0; i < 10; i++ {
+		req := sendEmailRequest(map[string]any{
+			"source":      "test@gmail.com",
+			"destination": "test@gmail.com",
+			"message": map[string]any{
+				"subject": map[string]any{"data": "test"},
+				"body": map[string]any{
+					"html": "test",
+				},
+			},
+		})
+		server.ServerHTTP(router, req)
+	}
+
+	t.Run("get stats", func(t *testing.T) {
+		req := sendGetStatsRequest()
+		resp := server.ServerHTTP(router, req)
+
+		assert.Equal(t, http.StatusOK, resp.Code, "wrong status code")
+		server.Assert(t, resp, http.StatusOK, map[string]any{
+			"TotalRequests":      float64(10),
+			"SuccessfulRequests": float64(10),
+			"FailedRequests":     float64(0),
+			"BouncedEmails":      float64(0),
+			"RejectedEmails":     float64(0),
+		})
+	})
+}
+
 func sendEmailRequest(body map[string]any) *http.Request {
 	data := &bytes.Buffer{}
 	json.NewEncoder(data).Encode(body)
@@ -263,6 +296,11 @@ func sendlistIdentitiesRequest() *http.Request {
 
 func sendGetQuotaRequest() *http.Request {
 	req, _ := http.NewRequest("GET", "/v1/getSendQuota", nil)
+	return req
+}
+
+func sendGetStatsRequest() *http.Request {
+	req, _ := http.NewRequest("GET", "/v1/stats", nil)
 	return req
 }
 
