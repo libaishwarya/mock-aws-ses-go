@@ -15,12 +15,12 @@ func NewInMemoryStore() *InMemoryStore {
 	return &InMemoryStore{}
 }
 
-func (i InMemoryStore) CreateEmailSend(r app.SendEmailRequest) (string, error) {
+func (i *InMemoryStore) CreateEmailSend(r app.SendEmailRequest) (string, error) {
 	i.EmailSent = append(i.EmailSent, r)
 	return strconv.Itoa(len(i.EmailSent)), nil
 }
 
-func (i InMemoryStore) CreateRawEmailSend(r app.SendRawEmailRequest) (string, error) {
+func (i *InMemoryStore) CreateRawEmailSend(r app.SendRawEmailRequest) (string, error) {
 	i.RawEmailSent = append(i.RawEmailSent, r)
 	return strconv.Itoa(len(i.RawEmailSent)), nil
 }

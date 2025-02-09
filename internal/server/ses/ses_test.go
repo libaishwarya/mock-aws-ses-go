@@ -95,6 +95,20 @@ func TestSendEmail_Success(t *testing.T) {
 			},
 			MessageID: "1",
 		},
+		{
+			Name: "createemail2r",
+			Body: map[string]any{
+				"source":      "test@gmail.com",
+				"destination": "test@gmail.com",
+				"message": map[string]any{
+					"subject": map[string]any{"data": "test"},
+					"body": map[string]any{
+						"html": "test",
+					},
+				},
+			},
+			MessageID: "2",
+		},
 	}
 
 	for _, tt := range tests {
@@ -150,6 +164,13 @@ func TestSendRawEmail_Success(t *testing.T) {
 				"data": "test",
 			},
 			MessageID: "1",
+		},
+		{
+			Name: "createrawemail2",
+			Body: map[string]any{
+				"data": "test",
+			},
+			MessageID: "2",
 		},
 	}
 
