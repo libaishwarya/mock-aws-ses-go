@@ -28,6 +28,7 @@ func (i *InMemoryStore) CreateEmailSend(r app.SendEmailRequest) (string, error) 
 	i.EmailSent = append(i.EmailSent, store.EmailSent{
 		Source:      r.Source,
 		Destination: r.Destination,
+		Status:      store.EmailSentStatusSent,
 		Message:     r.Message,
 		CreatedAt:   time.Now().UTC(),
 	})
@@ -38,6 +39,7 @@ func (i *InMemoryStore) CreateEmailSend(r app.SendEmailRequest) (string, error) 
 func (i *InMemoryStore) CreateRawEmailSend(r app.SendRawEmailRequest) (string, error) {
 	i.RawEmailSent = append(i.RawEmailSent, store.RawEmailSent{
 		Data:      r.Data,
+		Status:    store.EmailSentStatusSent,
 		CreatedAt: time.Now().UTC(),
 	})
 	return strconv.Itoa(len(i.RawEmailSent)), nil
