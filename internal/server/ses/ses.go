@@ -23,7 +23,7 @@ func AttachRoutes(r *gin.Engine, store store.Store) {
 	sesHandler := NewSESHandler(store)
 	r.POST("/v1/sendEmail", sesHandler.SendEmail)
 	r.POST("/v1/sendRawEmail", sesHandler.SendRawEmail)
-	// r.GET("/v1/listIdentities", sesHandler.ListIdentities)
+	r.GET("/v1/listIdentities", sesHandler.ListIdentities)
 	// r.GET("/v1/getSendQuota", sesHandler.GetSendQuota)
 	// r.GET("/v1/stats", sesHandler.GetStats)
 
@@ -68,5 +68,18 @@ func (s *SESHandler) SendRawEmail(c *gin.Context) {
 	// Simulate email sending
 	c.JSON(http.StatusOK, app.SendEmailResponse{
 		MessageId: messageID,
+	})
+}
+
+func (s *SESHandler) ListIdentities(c *gin.Context) {
+	identities, err := s.Store.ListIdentities()
+	if err != nil {
+		c.Error(err)
+		c.Status(http.StatusInternalServerError)
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"Identities": identities,
 	})
 }
