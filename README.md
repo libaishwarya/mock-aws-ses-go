@@ -1,0 +1,1 @@
+# mock-aws-ses-go
