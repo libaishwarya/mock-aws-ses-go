@@ -21,9 +21,9 @@ func NewSESHandler(store store.Store) *SESHandler {
 
 func AttachRoutes(r *gin.Engine, store store.Store) {
 	sesHandler := NewSESHandler(store)
-	r.POST("/v1/sendEmail", sesHandler.SendEmail)
-	r.POST("/v1/sendRawEmail", sesHandler.SendRawEmail)
-	r.GET("/v1/listIdentities", sesHandler.ListIdentities)
+	r.POST("/v1/sendEmail", sesHandler.identities(), sesHandler.SendEmail)
+	r.POST("/v1/sendRawEmail", sesHandler.identities(), sesHandler.SendRawEmail)
+	r.GET("/v1/listIdentities", sesHandler.identities(), sesHandler.ListIdentities)
 	// r.GET("/v1/getSendQuota", sesHandler.GetSendQuota)
 	// r.GET("/v1/stats", sesHandler.GetStats)
 
@@ -31,9 +31,17 @@ func AttachRoutes(r *gin.Engine, store store.Store) {
 
 func (s *SESHandler) SendEmail(c *gin.Context) {
 	var req app.SendEmailRequest
+	// For validating Identities
+	req.Identities = c.MustGet("identities").([]string)
 
 	if err := c.ShouldBindJSON(&req); err != nil {
 		serror.HandleBindError(c, err, req)
+		return
+	}
+
+	if err := req.Validate(); err != nil {
+		c.Error(err)
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -72,14 +80,20 @@ func (s *SESHandler) SendRawEmail(c *gin.Context) {
 }
 
 func (s *SESHandler) ListIdentities(c *gin.Context) {
-	identities, err := s.Store.ListIdentities()
-	if err != nil {
-		c.Error(err)
-		c.Status(http.StatusInternalServerError)
-		return
-	}
-
 	c.JSON(http.StatusOK, gin.H{
-		"Identities": identities,
+		"Identities": c.MustGet("identities"),
 	})
+}
+
+func (s *SESHandler) identities() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		identities, err := s.Store.ListIdentities()
+		if err != nil {
+			c.Error(err)
+			c.Status(http.StatusInternalServerError)
+			return
+		}
+
+		c.Set("identities", identities)
+	}
 }

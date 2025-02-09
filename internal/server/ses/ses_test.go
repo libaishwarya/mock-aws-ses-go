@@ -62,6 +62,21 @@ func TestSendEmail_Validation(t *testing.T) {
 			ExpectedStatus: http.StatusBadRequest,
 			ExpectedError:  "validation failed: Data: This field is required",
 		},
+		{
+			Name: "invalid sender",
+			Body: map[string]any{
+				"source":      "test@dummy.com",
+				"destination": "test@gmail.com",
+				"message": map[string]any{
+					"subject": map[string]any{"data": "test"},
+					"body": map[string]any{
+						"html": "test",
+					},
+				},
+			},
+			ExpectedStatus: http.StatusBadRequest,
+			ExpectedError:  "validation failed: invalid sender",
+		},
 	}
 
 	for _, tt := range tests {
