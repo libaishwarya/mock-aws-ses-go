@@ -30,6 +30,8 @@ https://small-mouse-libaishwarya-223bef55.koyeb.app/
 # To run tests:
 `go test ./...`
 
+Postman collection added for testing.
+
 
 # TODO
 * Fix error messages as per AWS spec
@@ -37,8 +39,7 @@ https://small-mouse-libaishwarya-223bef55.koyeb.app/
 * Optional(Relational store)
 * Time intervaled stats
 * Ratelimiting as AWS
-* Coverage check
-* Postman collection
+* Coverage check and show in readme using gihub workflow and code cov.
 
 # API Reference
 https://docs.aws.amazon.com/ses/latest/APIReference
