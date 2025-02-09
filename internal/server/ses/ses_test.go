@@ -75,7 +75,7 @@ func TestSendEmail_Validation(t *testing.T) {
 				},
 			},
 			ExpectedStatus: http.StatusBadRequest,
-			ExpectedError:  "validation failed: invalid sender",
+			ExpectedError:  "validation failed: MailFromDomainNotVerified",
 		},
 	}
 

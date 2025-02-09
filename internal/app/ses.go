@@ -35,7 +35,8 @@ type SendEmailRequest struct {
 // Validate validates the SendEmailRequest (custom validation).
 func (r SendEmailRequest) Validate() error {
 	if !slices.Contains(r.Identities, r.Source) {
-		return fmt.Errorf("validation failed: invalid sender")
+		// TODO: should be same as aws error.
+		return fmt.Errorf("validation failed: MailFromDomainNotVerified")
 	}
 
 	return nil
