@@ -1,0 +1,156 @@
+{
+	"info": {
+		"_postman_id": "afcb5030-3c17-40ae-8236-68a07237aab8",
+		"name": "mock-ses",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "23990351"
+	},
+	"item": [
+		{
+			"name": "send Email",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"source\": \"test@gmail.com\",\n    \"destination\": \"test@gmail.com\",\n    \"message\": {\n        \"body\": {\n            \"text\": \"test\"\n        },\n        \"subject\": {\n            \"data\": \"test\"\n        }\n    }\n\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/v1/sendEmail",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"sendEmail"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "send Raw Email",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"data\": \"test\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{server}}/v1/sendRawEmail",
+					"host": [
+						"{{server}}"
+					],
+					"path": [
+						"v1",
+						"sendRawEmail"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "list identities",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{server}}/v1/listIdentities",
+					"host": [
+						"{{server}}"
+					],
+					"path": [
+						"v1",
+						"listIdentities"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get quota",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{server}}/v1/getSendQuota",
+					"host": [
+						"{{server}}"
+					],
+					"path": [
+						"v1",
+						"getSendQuota"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get stats",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{server}}/v1/stats",
+					"host": [
+						"{{server}}"
+					],
+					"path": [
+						"v1",
+						"stats"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
