@@ -37,4 +37,6 @@ https://small-mouse-libaishwarya-223bef55.koyeb.app/
 https://docs.aws.amazon.com/ses/latest/APIReference
 
 # Check the OpenAPI spec for more details about request and response.
-https://editor.swagger.io/?raw=https://raw.githubusercontent.com/libaishwarya/mock-aws-ses-go/refs/heads/main/openapi.yaml
+#### **Swagger UI**
+```md
+[![Swagger UI](https://img.shields.io/badge/Swagger-UI-green)](https://petstore.swagger.io/?url=https://raw.githubusercontent.com/libaishwarya/mock-aws-ses-go/refs/heads/main/openapi.yaml)
