@@ -1,7 +1,8 @@
-package router
+package middleware
 
 import (
 	"github.com/gin-gonic/gin"
+
 	"github.com/libaishwarya/mock-aws-ses-go/internal/server/ses"
 	"github.com/libaishwarya/mock-aws-ses-go/internal/store/inmemory"
 )

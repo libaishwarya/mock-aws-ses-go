@@ -6,6 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/libaishwarya/mock-aws-ses-go/internal/app"
 	"github.com/libaishwarya/mock-aws-ses-go/internal/serror"
+	"github.com/libaishwarya/mock-aws-ses-go/internal/server/middleware"
 	"github.com/libaishwarya/mock-aws-ses-go/internal/store"
 )
 
@@ -21,8 +22,10 @@ func NewSESHandler(store store.Store) *SESHandler {
 
 func AttachRoutes(r *gin.Engine, store store.Store) {
 	sesHandler := NewSESHandler(store)
-	r.POST("/v1/sendEmail", sesHandler.identities(), sesHandler.SendEmail)
-	r.POST("/v1/sendRawEmail", sesHandler.identities(), sesHandler.SendRawEmail)
+	rl := middleware.NewRateLimiter(5, 10)
+
+	r.POST("/v1/sendEmail", middleware.RateLimitMiddleware(rl), sesHandler.identities(), sesHandler.SendEmail)
+	r.POST("/v1/sendRawEmail", middleware.RateLimitMiddleware(rl), sesHandler.identities(), sesHandler.SendRawEmail)
 	r.GET("/v1/listIdentities", sesHandler.identities(), sesHandler.ListIdentities)
 	r.GET("/v1/getSendQuota", sesHandler.GetSendQuota)
 	r.GET("/v1/stats", sesHandler.GetStats)
