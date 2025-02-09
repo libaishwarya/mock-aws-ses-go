@@ -67,7 +67,36 @@ func TestSendEmail_Validation(t *testing.T) {
 			req := sendEmailRequest(tt.Body)
 			resp := server.ServerHTTP(router, req)
 
-			server.AssertError(t, resp, http.StatusBadRequest, tt.ExpectedError)
+			server.AssertError(t, resp, tt.ExpectedStatus, tt.ExpectedError)
+		})
+	}
+}
+
+func TestSendRawEmail_Validation(t *testing.T) {
+	router := startServer()
+
+	tests := []struct {
+		Name           string
+		Body           map[string]any
+		ExpectedStatus int
+		ExpectedError  string
+	}{
+		{
+			Name: "missing data",
+			Body: map[string]any{
+				"test": "test",
+			},
+			ExpectedStatus: http.StatusBadRequest,
+			ExpectedError:  "validation failed: data: Invalid value",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.Name, func(t *testing.T) {
+			req := sendRawEmailRequest(tt.Body)
+			resp := server.ServerHTTP(router, req)
+
+			server.AssertError(t, resp, tt.ExpectedStatus, tt.ExpectedError)
 		})
 	}
 }
@@ -76,6 +105,13 @@ func sendEmailRequest(body map[string]any) *http.Request {
 	data := &bytes.Buffer{}
 	json.NewEncoder(data).Encode(body)
 	req, _ := http.NewRequest("POST", "/v1/sendEmail", data)
+	return req
+}
+
+func sendRawEmailRequest(body map[string]any) *http.Request {
+	data := &bytes.Buffer{}
+	json.NewEncoder(data).Encode(body)
+	req, _ := http.NewRequest("POST", "/v1/sendRawEmail", data)
 	return req
 }
 
