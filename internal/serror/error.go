@@ -51,6 +51,9 @@ func HandleBindError(c *gin.Context, err error, obj interface{}) {
 
 	if errors, ok := err.(validator.ValidationErrors); ok {
 		validationErrors = errors
+	} else {
+		c.JSON(http.StatusBadRequest, "invalid fields provided")
+		return
 	}
 
 	errorMessages := make(map[string]string)
