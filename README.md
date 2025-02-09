@@ -38,4 +38,7 @@ https://docs.aws.amazon.com/ses/latest/APIReference
 
 # Check the OpenAPI spec for more details about request and response.
 #### **Swagger UI**
-[![Swagger UI](https://img.shields.io/badge/Swagger-UI-green)](https://petstore.swagger.io/?url=https://raw.githubusercontent.com/libaishwarya/mock-aws-ses-go/refs/heads/main/openapi.yaml)
+[![OpenAPI Spec](https://img.shields.io/badge/Swagger-UI-green)](https://petstore.swagger.io/?url=https://raw.githubusercontent.com/libaishwarya/mock-aws-ses-go/refs/heads/main/openapi.yaml)
+
+
+[![View API Docs](https://img.shields.io/badge/API-Docs-red)](https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/libaishwarya/mock-aws-ses-go/refs/heads/main/openapi.yaml)
