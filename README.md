@@ -10,6 +10,8 @@ Current all the email sending will be success. The list of destination email for
 
 Set rate limit: 5 requests per second with a burst of 10 (Should be changed according to the AWS) (Check TODO)
 
+# Deployed on:
+https://small-mouse-libaishwarya-223bef55.koyeb.app/
 
 # How to start server:
 1. Clone the code `git clone git@github.com:libaishwarya/mock-aws-ses-go.git`
@@ -21,7 +23,6 @@ Set rate limit: 5 requests per second with a burst of 10 (Should be changed acco
 # To run tests:
 `go test ./...`
 
-# Check the OpenAPI spec for more details about request and response.
 
 # TODO
 * Fix error messages as per AWS spec
@@ -34,3 +35,6 @@ Set rate limit: 5 requests per second with a burst of 10 (Should be changed acco
 
 # API Reference
 https://docs.aws.amazon.com/ses/latest/APIReference
+
+# Check the OpenAPI spec for more details about request and response.
+https://editor.swagger.io/?raw=https://raw.githubusercontent.com/libaishwarya/mock-aws-ses-go/refs/heads/main/openapi.yaml
